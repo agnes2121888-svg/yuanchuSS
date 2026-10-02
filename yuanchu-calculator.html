@@ -68,10 +68,17 @@ function nums(id,arr){return arr.map((v,i)=>`<input type=number step=any data-g=
 function sumOf(id){return [...document.querySelectorAll(`[data-g="${id}"]`)].reduce((a,e)=>a+(+e.value||0),0)}
 function row(label,id,arr,pid,note){return `<div class=row><div class=lab>${label}${note?`<div class=note>${note}</div>`:''}</div><div class=grp>${nums(id,arr)}</div><div class=pt id=${pid}></div></div>`}
 
+function targetRow(def){return `<div class=row><div class=lab>目標原初之星</div><div class=grp><input type=number step=any data-g=target placeholder="輸入目標" value="${def??''}"></div><div class=pt id=gap></div></div>`}
+function showGap(star){
+ const el=document.querySelector('[data-g=target]'),g=$('#gap');
+ if(!el||el.value===''){g.innerHTML='<span class=note>輸入目標後顯示</span>';return}
+ const d=star-(+el.value);
+ g.innerHTML=d>=0?`<span class=over>已超出 ${fmt(d)}</span>`:`<span class=under>還差 ${fmt(-d)}</span>`;
+}
 function renderS1(){
  $('#view').innerHTML=`<div class=card><b>逢魔賽季</b>
  ${[['等級','a',130],['裝備','b',141],['技能','c',130],['幻獸','d',130],['古遺物','e',13]].map(([l,k,v])=>`<div class=row><div class=lab>${l}</div><div class=grp><input type=number data-g=${k} value=${v}></div><div class=pt id=p${k}></div></div>`).join('')}</div>
- <div class="card res"><div class=row><div class=lab>總共評分</div><div class=pt id=tot></div></div><div class=row><div class=lab>原初之星</div><div class="pt big" id=star></div></div></div>`;
+ <div class="card res"><div class=row><div class=lab>總共評分</div><div class=pt id=tot></div></div><div class=row><div class=lab>原初之星</div><div class="pt big" id=star></div></div>${targetRow('')}</div>`;
  calc();
 }
 function renderS(s){
@@ -85,7 +92,7 @@ function renderS(s){
  <div class=row><div class=lab>取整後原初之星</div><div class=pt id=flo></div></div>
  <div class=row><div class=lab>${s.pl}</div><div class=grp><input type=number data-g=prior value=${s.prior}></div></div>
  <div class=row><div class=lab>總原初之星</div><div class="pt big" id=star></div></div>
- ${s.target?`<div class=row><div class=lab>目標 ${s.target}</div><div class=pt id=gap></div></div>`:''}
+ ${targetRow(s.target)}
  <div class=note>公式：總評分 ÷ ${s.div} + ${s.add}，無條件捨去。細節請見「星象詞條」。</div></div>`;
  calc();
 }
@@ -95,15 +102,14 @@ function calc(){
   const p=[(v('a')-100)*100,(v('b')-100)*38*5,(v('c')-100)*13*8,(v('d')-100)*14*4,(v('e')-10)*57*20];
   ['a','b','c','d','e'].forEach((k,i)=>$('#p'+k).textContent=fmt(p[i]));
   const t=p.reduce((a,b)=>a+b,0);
-  $('#tot').textContent=fmt(t);$('#star').textContent=fmt(Math.floor(t/100)+10);return;
+  $('#tot').textContent=fmt(t);const st=Math.floor(t/100)+10;$('#star').textContent=fmt(st);showGap(st);return;
  }
  const s=SEASONS.find(x=>x.id===cur);
  const [l,d,e]=[...document.querySelectorAll('[data-g=lv]')].map(x=>+x.value||0);
  const p=[(l-s.lv)*100+(e?d/e*100:0),(sumOf('pet')-s.pet[0])*s.pet[1],(sumOf('eq')-s.eq[0])*s.eq[1],(sumOf('sk')-s.sk[0])*s.sk[1],(sumOf('re')-s.re[0])*s.re[1]];
  p.forEach((x,i)=>$('#p'+i).textContent=fmt(x));
  const t=p.reduce((a,b)=>a+b,0),raw=t/s.div+s.add,flo=Math.floor(raw),prior=+document.querySelector('[data-g=prior]').value||0;
- $('#tot').textContent=fmt(t);$('#raw').textContent=raw.toFixed(2);$('#flo').textContent=fmt(flo);$('#star').textContent=fmt(prior+flo);
- if(s.target){const g=prior+flo-s.target;$('#gap').innerHTML=g>=0?`<span class=over>已超出 ${fmt(g)}</span>`:`<span class=under>還差 ${fmt(-g)}</span>`}
+ $('#tot').textContent=fmt(t);$('#raw').textContent=raw.toFixed(2);$('#flo').textContent=fmt(flo);$('#star').textContent=fmt(prior+flo);showGap(prior+flo);
 }
 function renderStar(){
  $('#view').innerHTML=`<div class=card><b>星象詞條</b><div class=note>各詞條升至對應等級所需的累計原初之星</div><div class=wrap><table><tr><th>詞條</th>${[1,2,3,4,5,6,7,8,9].map(i=>`<th>Lv.${i}</th>`).join('')}</tr>${STAR.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div></div>`;
