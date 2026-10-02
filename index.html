@@ -25,12 +25,20 @@ li a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line);
 li a:hover{color:var(--ink);border-color:var(--star)}
 footer{text-align:center;color:var(--mute);font-size:.8rem;padding:16px;position:relative;z-index:1}
 main{position:relative;z-index:1}
-.mascot{position:fixed;right:0;bottom:0;width:clamp(150px,30vw,400px);height:auto;z-index:0;pointer-events:none;user-select:none}
-@media (max-width:640px){main{padding-bottom:150px}.mascot{opacity:.9}}
+.mascot-box{position:fixed;right:0;bottom:0;width:clamp(150px,30vw,400px);z-index:2;pointer-events:none}
+.mascot-btn{display:block;width:100%;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.mascot{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.bubble{position:absolute;right:46%;bottom:74%;width:clamp(160px,27vw,320px);height:auto;transform-origin:15% 100%;opacity:0;transform:scale(.4);pointer-events:none;transition:opacity .18s,transform .28s cubic-bezier(.34,1.56,.64,1)}
+.bubble.show{opacity:1;transform:scale(1)}
+@media (prefers-reduced-motion:reduce){.bubble{transition:opacity .1s;transform:none}}
+@media (max-width:640px){main{padding-bottom:150px}}
 </style>
 </head>
 <body>
-<img class="mascot" src="liar.webp" alt="" width="800" height="740">
+<div class="mascot-box">
+ <img class="bubble" id="bubble" src="bubble.webp" alt="這都不會算嗎..." width="700" height="422">
+ <button class="mascot-btn" id="mascot" type="button" aria-label="點一下和 Liar 說話"><img class="mascot" src="liar.webp" alt="" width="800" height="740"></button>
+</div>
 <main>
  <img class="logo" src="logo.webp" alt="SSSTUDIO" width="674" height="700">
  <h1>Liar原初之星計算器</h1>
@@ -46,5 +54,11 @@ main{position:relative;z-index:1}
  </ul>
 </main>
 <footer>© Liar<br>Made by 三個字</footer>
+<script>
+(()=>{const b=document.getElementById('bubble');let t;
+document.getElementById('mascot').addEventListener('click',()=>{
+ b.classList.add('show');clearTimeout(t);t=setTimeout(()=>b.classList.remove('show'),3000);
+});})();
+</script>
 </body>
 </html>
