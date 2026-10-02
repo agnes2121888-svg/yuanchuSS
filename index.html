@@ -28,7 +28,9 @@ main{position:relative;z-index:1}
 .mascot-box{position:fixed;right:0;bottom:0;width:clamp(150px,30vw,400px);z-index:2;pointer-events:none}
 .mascot-btn{display:block;width:100%;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
 .mascot{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
-.bubble{position:absolute;right:46%;bottom:74%;width:clamp(160px,27vw,320px);height:auto;transform-origin:15% 100%;opacity:0;transform:scale(.4);pointer-events:none;transition:opacity .18s,transform .28s cubic-bezier(.34,1.56,.64,1)}
+.mascot-box{--bw:clamp(160px,27vw,320px)}
+.bubble{position:absolute;right:46%;bottom:74%;width:var(--bw);height:auto;transform-origin:15% 100%;opacity:0;transform:scale(.4);pointer-events:none;transition:opacity .18s,transform .28s cubic-bezier(.34,1.56,.64,1)}
+.bubble.b2{width:calc(var(--bw)*.6016);right:calc(46% + var(--bw)*.243)}
 .bubble.show{opacity:1;transform:scale(1)}
 @media (prefers-reduced-motion:reduce){.bubble{transition:opacity .1s;transform:none}}
 @media (max-width:640px){main{padding-bottom:150px}}
@@ -36,7 +38,8 @@ main{position:relative;z-index:1}
 </head>
 <body>
 <div class="mascot-box">
- <img class="bubble" id="bubble" src="bubble.webp" alt="這都不會算嗎..." width="700" height="422">
+ <img class="bubble b1" src="bubble.webp" alt="這都不會算嗎..." width="700" height="422" aria-hidden="true">
+ <img class="bubble b2" src="bubble2.webp" alt="白癡..." width="421" height="253" aria-hidden="true">
  <button class="mascot-btn" id="mascot" type="button" aria-label="點一下和 Liar 說話"><img class="mascot" src="liar.webp" alt="" width="800" height="740"></button>
 </div>
 <main>
@@ -55,9 +58,11 @@ main{position:relative;z-index:1}
 </main>
 <footer>© Liar<br>Made by 三個字</footer>
 <script>
-(()=>{const b=document.getElementById('bubble');let t;
+(()=>{const bs=[...document.querySelectorAll('.bubble')];let i=0,cur=null,t;
+const hide=()=>{if(cur){cur.classList.remove('show');cur.setAttribute('aria-hidden','true');cur=null}};
 document.getElementById('mascot').addEventListener('click',()=>{
- b.classList.add('show');clearTimeout(t);t=setTimeout(()=>b.classList.remove('show'),3000);
+ if(!cur){cur=bs[i];i=(i+1)%bs.length;cur.classList.add('show');cur.removeAttribute('aria-hidden')}
+ clearTimeout(t);t=setTimeout(hide,3000);
 });})();
 </script>
 </body>
