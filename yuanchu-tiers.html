@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="logo.webp" type="image/webp">
+<title>原初檔位｜Liar原初之星計算器</title>
+<style>
+@font-face{font-family:"JF Open Huninn";src:url("jf-openhuninn-2_1.woff2") format("woff2");font-weight:100 900;font-display:swap}
+:root{--bg:#E0D0F6;--card:#f7f2fd;--ink:#2a1b4d;--mute:#5e4a8c;--line:#cbb8ec;--acc:#6c50b9;--btn:#3a2670;--out:#ece1fa;--hi:#fbefc4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"JF Open Huninn","Noto Sans TC","PingFang TC","Microsoft JhengHei",Arial,sans-serif;line-height:1.5}
+main{max-width:860px;margin:0 auto;padding:20px 14px 60px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--mute);font-size:.9rem;margin:0 0 16px}
+.back{display:inline-block;margin-bottom:10px;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line)}
+.back:hover{color:var(--ink)}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+nav button{font-family:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:.95rem}
+nav button.on{background:var(--btn);border-color:var(--btn);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.head b{font-size:1.1rem}
+label{color:var(--mute);font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:6px}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid var(--line);padding:7px 12px;text-align:center;white-space:nowrap}
+th{background:var(--btn);color:#fff;font-weight:600}
+td:nth-child(2){text-align:left}
+tr.tier td{background:var(--hi)}
+tr.tier td:last-child{font-weight:700}
+.note{color:var(--mute);font-size:.82rem;margin:10px 0 0}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="index.html">← 返回首頁</a>
+<h1>原初檔位</h1>
+<p class="sub">命運星象各賽季的屬性效果與檔位推薦，淡黃色列為建議檔位。</p>
+<nav id="tabs"></nav>
+<div class="card">
+ <div class="head"><b id="title"></b><label><input type="checkbox" id="only"> 只看有檔位推薦的列</label></div>
+ <div class="wrap"><table><thead><tr><th>原初之星</th><th>屬性效果</th><th>檔位推薦</th></tr></thead><tbody id="body"></tbody></table></div>
+ <p class="note" id="msg"></p>
+ <p class="note">資料來源:楓琴柚の杖劍傳說資料庫</p>
+</div>
+</main>
+<script>
+const DATA=[{"id":"S1","name":"S1逢魔時至","rows":[[5,"攻擊+1%",null],[10,"昇華+3%",null],[15,"防禦+1%",null],[20,"寶石獲取+5%",null],[25,"生命+1%",null],[30,"副本翻倍+2%",null],[35,"速度+1%",null],[40,"經驗獲取+2%",null],[48,"攻擊+1%",null],[56,"昇華+3%",null],[64,"防禦+1%",null],[72,"寶石獲取+5%","做不到揍你"],[80,"生命+1%",null],[88,"副本翻倍+2%",null],[96,"速度+1%",null],[104,"經驗獲取+2%","最基本"],[116,"攻擊+1%",null],[128,"昇華+3%","大部队"],[140,"防禦+1%",null],[152,"寶石獲取+5%","小氪/中氪"],[164,"生命+1%",null],[176,"副本翻倍+2%","中氪"],[188,"速度+1%",null],[200,"經驗獲取+2%","中大氪"],[215,"攻擊+1%",null],[230,"昇華+3%","大氪"],[245,"防禦+1%",null],[260,"寶石獲取+5%","頂氪"],[275,"生命+1%",null],[290,"副本翻倍+2%","頂氪"],[305,"速度+1%",null],[320,"經驗獲取+2%",null],[340,"攻擊+1%",null],[360,"昇華+3%",null],[380,"防禦+1%",null],[400,"寶石獲取+5%",null],[420,"生命+1%",null],[440,"副本翻倍+2%",null],[460,"速度+1%",null],[480,"經驗獲取+2%",null]]},{"id":"S2","name":"S2淵虹邂羽","rows":[[505,"攻擊+1%",null],[530,"昇華+3%",null],[555,"防禦+1%",null],[580,"寶石獲取+5%",null],[605,"生命+1%",null],[630,"副本翻倍+2%",null],[655,"速度+1%",null],[680,"經驗獲取+2%","最基本"],[710,"攻擊+1%",null],[740,"昇華+3%",null],[770,"防禦+1%",null],[800,"寶石獲取+5%","平民"],[830,"生命+1%",null],[860,"副本翻倍+2%",null],[890,"速度+1%",null],[920,"經驗獲取+2%","小氪/中氪"],[955,"攻擊+1%",null],[990,"昇華+3%","不小心超了"],[1025,"防禦+1%",null],[1060,"寶石獲取+5%","趕緊停"],[1095,"生命+1%",null],[1130,"副本翻倍+2%",null],[1165,"速度+1%",null],[1200,"經驗獲取+2%","大氪"],[1240,"攻擊+1%",null],[1280,"昇華+3%",null],[1320,"防禦+1%",null],[1360,"寶石獲取+5%",null],[1400,"生命+1%",null],[1440,"副本翻倍+2%",null],[1480,"速度+1%",null],[1520,"經驗獲取+2%",null],[1565,"攻擊+1%",null],[1610,"昇華+3%",null],[1655,"防禦+1%",null],[1700,"寶石獲取+5%",null],[1745,"生命+1%",null],[1790,"副本翻倍+2%",null],[1835,"速度+1%",null],[1880,"經驗獲取+2%",null]]},{"id":"S3","name":"S3混沌終焉","rows":[[1940,"攻擊+1%",null],[2000,"昇華+3%",null],[2060,"防禦+1%",null],[2120,"寶石獲取+5%",null],[2180,"生命+1%",null],[2240,"副本翻倍+2%",null],[2300,"速度+1%",null],[2360,"經驗獲取+2%","最基本"],[2425,"攻擊+1%",null],[2490,"昇華+3%",null],[2555,"防禦+1%",null],[2620,"寶石獲取+5%","沒2880但嘗試"],[2685,"生命+1%",null],[2750,"副本翻倍+2%",null],[2815,"速度+1%",null],[2880,"經驗獲取+2%","平民"],[2950,"攻擊+1%",null],[3020,"昇華+3%",null],[3090,"防禦+1%",null],[3160,"寶石獲取+5%","平民停手區"],[3230,"生命+1%",null],[3300,"副本翻倍+2%","小氪/中氪"],[3370,"速度+1%",null],[3440,"經驗獲取+2%","嘗試達到"],[3515,"攻擊+1%",null],[3590,"昇華+3%","可以停手了"],[3665,"防禦+1%",null],[3740,"寶石獲取+5%","大氪"],[3815,"生命+1%",null],[3890,"副本翻倍+2%","大氪停手區"],[3965,"速度+1%",null],[4040,"經驗獲取+2%","超級大氪"],[4120,"攻擊+1%",null],[4200,"昇華+3%",null],[4280,"防禦+1%",null],[4360,"寶石獲取+5%",null],[4440,"生命+1%",null],[4520,"副本翻倍+2%",null],[4600,"速度+1%",null],[4680,"經驗獲取+2%",null]]},{"id":"S4","name":"S4怪誕劇場","rows":[[4770,"攻擊+1%",null],[4860,"昇華+3%",null],[4950,"防禦+1%",null],[5040,"寶石獲取+5%",null],[5130,"生命+1%",null],[5220,"副本翻倍+2%",null],[5310,"速度+1%",null],[5400,"經驗獲取+2%",null],[5500,"攻擊+1%",null],[5600,"昇華+3%",null],[5700,"防禦+1%",null],[5800,"寶石獲取+5%",null],[5900,"生命+1%",null],[6000,"副本翻倍+2%",null],[6100,"速度+1%",null],[6200,"經驗獲取+2%","拿不到揍你"],[6310,"攻擊+1%",null],[6420,"昇華+3%","合服倒黴蛋"],[6530,"防禦+1%",null],[6640,"寶石獲取+5%","合服倒黴蛋"],[6750,"生命+1%",null],[6860,"副本翻倍+2%","合服倒黴蛋"],[6970,"速度+1%",null],[7080,"經驗獲取+2%","零氪/平民"],[7200,"攻擊+1%",null],[7320,"昇華+3%",null],[7440,"防禦+1%",null],[7560,"寶石獲取+5%","小氪"],[7680,"生命+1%",null],[7800,"副本翻倍+2%",null],[7920,"速度+1%",null],[8040,"經驗獲取+2%","中氪"],[8170,"攻擊+1%",null],[8300,"昇華+3%",null],[8430,"防禦+1%",null],[8560,"寶石獲取+5%","拿不到9080"],[8690,"生命+1%",null],[8820,"副本翻倍+2%",null],[8950,"速度+1%",null],[9080,"經驗獲取+2%","中大氪"],[9220,"攻擊+1%",null],[9360,"昇華+3%",null],[9500,"防禦+1%",null],[9640,"寶石獲取+5%",null],[9780,"生命+1%",null],[9920,"副本翻倍+2%",null],[10060,"速度+1%",null],[10200,"經驗獲取+2%","大氪"],[10350,"攻擊+1%",null],[10500,"昇華+3%",null],[10650,"防禦+1%",null],[10800,"寶石獲取+5%",null],[10950,"生命+1%",null],[11100,"副本翻倍+2%",null],[11250,"速度+1%",null],[11400,"經驗獲取+2%",null],[11560,"攻擊+1%",null],[11720,"昇華+3%",null],[11800,"防禦+1%",null]]},{"id":"S5","name":"S5霜焰之歌","rows":[[12040,"寶石獲取+5%",null],[12200,"生命+1%",null],[12360,"副本翻倍+2%",null],[12520,"速度+1%",null],[12680,"經驗獲取+2%","拿不到揍你"],[12850,"攻擊+1%",null],[13020,"昇華+3%",null],[13190,"防禦+1%",null],[13360,"寶石獲取+5%",null],[13530,"生命+1%",null],[13700,"副本翻倍+2%",null],[13870,"速度+1%",null],[14040,"經驗獲取+2%","合服倒黴蛋"],[14220,"攻擊+1%",null],[14400,"昇華+3%",null],[14580,"防禦+1%",null],[14760,"寶石獲取+5%",null],[14940,"生命+1%",null],[15120,"副本翻倍+2%",null],[15300,"速度+1%",null],[15480,"經驗獲取+2%","零氪/小氪"],[15680,"攻擊+1%",null],[15880,"昇華+3%",null],[16080,"防禦+1%",null],[16280,"黃金礦洞+5%","中氪分水嶺"],[16480,"生命+1%",null],[16680,"副本翻倍+2%",null],[16880,"速度+1%",null],[17080,"經驗獲取+2%","中氪"],[17300,"攻擊+1%",null],[17520,"昇華+3%",null],[17740,"防禦+1%",null],[17960,"鐵石礦洞+5%","中氪 (弱勢職業)"],[18180,"生命+1%",null],[18400,"副本翻倍+2%",null],[18620,"速度+1%",null],[18840,"經驗獲取+2%","中大氪"],[19080,"攻擊+1%",null],[19320,"昇華+3%",null],[19560,"防禦+1%",null],[19800,"砂石礦洞+5%","大氪分水嶺"],[20040,"生命+1%",null],[20280,"副本翻倍+2%",null],[20520,"速度+1%",null],[20760,"經驗獲取+2%","大氪"],[21020,"攻擊+1%",null],[21280,"昇華+3%",null],[21540,"防禦+1%",null],[21800,"怪物洞窟+5%",null],[22060,"生命+1%",null],[22320,"副本翻倍+2%",null],[22580,"速度+1%",null],[22840,"經驗獲取+2%","頂氪"],[23120,"攻擊+1%",null],[23400,"昇華+3%",null],[23680,"防禦+1%",null],[23960,"黃金礦洞+5%","你真有錢"],[24240,"生命+1%",null],[24520,"副本翻倍+2%",null]]},{"id":"S6","name":"S6閃耀羈絆","rows":[[null,"速度+1%",null],[null,"經驗獲取+2%",null],[null,"攻擊+1%",null],[null,"昇華+3%",null],[null,"防禦+1%",null],[null,"鐵石礦洞+5%",null],[null,"生命+1%",null],[null,"副本翻倍+2%",null],[null,"速度+1%",null],[null,"經驗獲取+2%",null],[null,"攻擊+1%",null],[null,"昇華+3%",null],[null,"防禦+1%",null],[null,"砂石礦洞+5%",null],[null,"生命+1%",null],[null,"副本翻倍+2%",null],[null,"速度+1%",null],[null,"經驗獲取+2%",null],[null,"攻擊+1%",null],[null,"昇華+3%",null],[null,"防禦+1%",null],[null,"怪物洞窟+5%",null],[null,"生命+1%",null],[null,"副本翻倍+2%",null],[null,"速度+1%",null],[null,"經驗獲取+2%",null],[null,"攻擊+1%",null],[null,"昇華+3%",null],[null,"防禦+1%",null],[null,"黃金礦洞+5%",null],[null,"生命+1%",null],[null,"副本翻倍+2%",null],[null,"速度+1%",null],[null,"經驗獲取+2%",null],[null,"攻擊+1%",null],[null,"昇華+3%",null],[null,"防禦+1%",null],[null,"鐵石礦洞+5%",null],[null,"生命+1%",null],[null,"副本翻倍+2%",null],[null,"速度+1%",null],[null,"經驗獲取+2%",null],[null,"攻擊+1%",null],[null,"昇華+3%",null],[null,"防禦+1%",null],[null,"砂石礦洞+5%",null],[null,"生命+1%",null],[null,"副本翻倍+2%",null],[null,"速度+1%",null],[null,"經驗獲取+2%",null],[null,"攻擊+1%",null],[null,"昇華+3%",null],[null,"防禦+1%",null],[null,"怪物洞窟+5%",null],[null,"生命+1%",null],[null,"副本翻倍+2%",null],[null,"速度+1%",null],[null,"經驗獲取+2%",null],[null,"攻擊+1%",null]]}];
+const $=s=>document.querySelector(s);
+let cur=DATA[0].id;
+function render(){
+ const s=DATA.find(x=>x.id===cur),only=$('#only').checked;
+ document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===cur));
+ $('#title').textContent=s.name;
+ $('#body').innerHTML=s.rows.filter(r=>!only||r[2]).map(r=>`<tr${r[2]?' class=tier':''}><td>${r[0]??'—'}</td><td>${r[1]}</td><td>${r[2]??''}</td></tr>`).join('');
+ $('#msg').textContent=s.rows.every(r=>r[0]==null)?`${s.id} 的原初之星數值尚未公布。`:'';
+}
+$('#tabs').innerHTML=DATA.map(s=>`<button data-t="${s.id}">${s.id}</button>`).join('');
+$('#tabs').addEventListener('click',e=>{if(e.target.dataset.t){cur=e.target.dataset.t;render()}});
+$('#only').addEventListener('change',render);
+const h=decodeURIComponent(location.hash.slice(1));
+if(DATA.some(s=>s.id===h))cur=h;
+render();
+</script>
+</body>
+</html>
