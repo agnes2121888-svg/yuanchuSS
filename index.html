@@ -22,10 +22,14 @@ a:focus-visible{outline:3px solid var(--star);outline-offset:3px}
 ul{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 22px;padding:0;margin:40px 0 0}
 li a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
 li a:hover{color:var(--ink);border-color:var(--star)}
-footer{text-align:center;color:var(--mute);font-size:.8rem;padding:16px}
+footer{text-align:center;color:var(--mute);font-size:.8rem;padding:16px;position:relative;z-index:1}
+main{position:relative;z-index:1}
+.mascot{position:fixed;right:0;bottom:0;width:clamp(150px,30vw,400px);height:auto;z-index:0;pointer-events:none;user-select:none}
+@media (max-width:640px){main{padding-bottom:150px}.mascot{opacity:.9}}
 </style>
 </head>
 <body>
+<img class="mascot" src="liar.webp" alt="" width="800" height="740">
 <main>
  <svg viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" d="M50 4 L61 38 L96 38 L67.5 59 L78.5 93 L50 72 L21.5 93 L32.5 59 L4 38 L39 38 Z"/></svg>
  <h1>Liar原初之星計算器</h1>
